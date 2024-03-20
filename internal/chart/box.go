@@ -1,23 +1,29 @@
 package chart
 
+import "math"
+
 type Box struct {
-	Top    int
-	Left   int
-	Right  int
-	Bottom int
+	//Top    int
+	//Left   int
+	//Right  int
+	//Bottom int
+	Top    float64
+	Left   float64
+	Right  float64
+	Bottom float64
 }
 
-func (b *Box) Width() int {
+func (b *Box) Width() float64 {
 	return abs(b.Right - b.Left)
 }
 
-func (b *Box) Height() int {
+func (b *Box) Height() float64 {
 	return abs(b.Bottom - b.Top)
 }
 
-func (b *Box) Center() (x, y int) {
-	w2, h2 := b.Width()>>1, b.Height()>>1
-	return b.Left + w2, b.Top + h2
+func (b *Box) Center() (x, y float64) {
+	w2, h2 := int(b.Width())>>1, int(b.Height())>>1
+	return b.Left + float64(w2), b.Top + float64(h2)
 }
 
 func (b *Box) Clone() *Box {
@@ -31,10 +37,10 @@ func (b *Box) Clone() *Box {
 
 func (b *Box) Grow(other *Box) *Box {
 	return &Box{
-		Top:    min(b.Top, other.Top),
-		Left:   min(b.Left, other.Left),
-		Right:  max(b.Right, other.Right),
-		Bottom: max(b.Bottom, other.Bottom),
+		Top:    math.Min(float64(b.Top), float64(other.Top)),
+		Left:   math.Min(float64(b.Left), float64(other.Left)),
+		Right:  math.Max(float64(b.Right), float64(other.Right)),
+		Bottom: math.Max(float64(b.Bottom), float64(other.Bottom)),
 	}
 }
 
@@ -77,21 +83,21 @@ type BoxCorners struct {
 
 func (bc *BoxCorners) Box() *Box {
 	return &Box{
-		Top:    min(bc.TopLeft.Y, bc.TopRight.Y),
-		Left:   min(bc.TopLeft.X, bc.BottomLeft.X),
-		Right:  max(bc.TopRight.X, bc.BottomRight.X),
-		Bottom: max(bc.BottomLeft.Y, bc.BottomRight.Y),
+		Top:    math.Min(bc.TopLeft.Y, bc.TopRight.Y),
+		Left:   math.Min(bc.TopLeft.X, bc.BottomLeft.X),
+		Right:  math.Max(bc.TopRight.X, bc.BottomRight.X),
+		Bottom: math.Max(bc.BottomLeft.Y, bc.BottomRight.Y),
 	}
 }
 
 func (bc *BoxCorners) Center() (x, y int) {
 	left := mean(bc.TopLeft.X, bc.BottomLeft.X)
 	right := mean(bc.TopRight.X, bc.BottomRight.X)
-	x = ((right - left) >> 1) + left
+	x = ((int(right) - int(left)) >> 1) + int(left)
 
 	top := mean(bc.TopLeft.Y, bc.TopRight.Y)
 	bottom := mean(bc.BottomLeft.Y, bc.BottomRight.Y)
-	y = ((bottom - top) >> 1) + top
+	y = ((int(bottom) - int(top)) >> 1) + int(top)
 
 	return
 }
@@ -115,5 +121,5 @@ func (bc *BoxCorners) Rotate(thetaDegrees float64) *BoxCorners {
 }
 
 type Point struct {
-	X, Y int
+	X, Y float64
 }

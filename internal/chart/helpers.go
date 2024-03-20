@@ -2,6 +2,7 @@ package chart
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/caarlos0/starcharts/internal/chart/svg"
@@ -18,8 +19,8 @@ func measureText(body string, size float64) Box {
 	}
 
 	return Box{
-		Right:  drawer.MeasureString(body).Ceil(),
-		Bottom: int(pointsToPixels(DPI, size)),
+		Right: float64(drawer.MeasureString(body).Ceil()),
+		Bottom: pointsToPixels(DPI, size),
 	}
 }
 
@@ -41,7 +42,7 @@ func rotate(ang float32, x int, y int) string {
 }
 
 func normaliseStrokeWidth(strokeWidth float64) string {
-	return svg.Point(max(MinStrokeWidth, strokeWidth))
+	return svg.Point(math.Max(MinStrokeWidth, strokeWidth))
 }
 
 func styles(property, value string) string {

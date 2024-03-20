@@ -42,7 +42,7 @@ func generateTicks(rng *Range, isVertical bool, formatter ValueFormatter) []Tick
 	tickStep := rangeDelta / float64(intermediateTickCount)
 
 	roundTo := getRoundToForDelta(rangeDelta) / 10
-	intermediateTickCount = min(intermediateTickCount, DefaultTickCountSanityCheck)
+	intermediateTickCount = int(math.Min(float64(intermediateTickCount), DefaultTickCountSanityCheck))
 
 	for x := 1; x < intermediateTickCount; x++ {
 		tickValue := rng.Min + roundUp(tickStep*float64(x), roundTo)

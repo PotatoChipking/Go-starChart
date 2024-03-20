@@ -14,9 +14,9 @@ func (r *Range) GetDelta() float64 {
 	return r.Max - r.Min
 }
 
-func (r *Range) Translate(value float64) int {
+func (r *Range) Translate(value float64) float64 {
 	normalized := value - r.Min
 	ratio := normalized / r.GetDelta()
 
-	return int(math.Ceil(ratio * float64(r.Domain)))
+	return math.Ceil(ratio * float64(r.Domain))
 }

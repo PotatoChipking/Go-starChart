@@ -22,23 +22,23 @@ func (ya *YAxis) Measure(canvas *Box, ra *Range, ticks []Tick) *Box {
 		ly := canvas.Bottom - ra.Translate(t.Value)
 
 		tb := measureText(t.Label, AxisFontSize)
-		maxTextHeight = max(tb.Height(), maxTextHeight)
+		maxTextHeight = int(math.Max(tb.Height(), float64(maxTextHeight)))
 
-		minX = canvas.Right
-		maxX = max(maxX, tx+tb.Width())
+		minX = int(canvas.Right)
+		maxX = int(math.Max(float64(maxX), tx+tb.Width()))
 
-		tbh2 := tb.Height() >> 1
-		minY = min(minY, ly-tbh2)
-		maxY = max(maxY, ly+tbh2)
+		tbh2 := int(tb.Height()) >> 1
+		minY = int(math.Min(float64(minY), ly-float64(tbh2)))
+		maxY = int(math.Max(float64(maxY), ly+float64(tbh2)))
 	}
 
 	maxX += YAxisMargin + maxTextHeight
 
 	return &Box{
-		Top:    minY,
-		Left:   minX,
-		Right:  maxX,
-		Bottom: maxY,
+		Top:    float64(minY),
+		Left:   float64(minX),
+		Right:  float64(maxX),
+		Bottom: float64(maxY),
 	}
 }
 
@@ -53,7 +53,7 @@ func (ya *YAxis) Render(w io.Writer, canvasBox *Box, ra *Range, ticks []Tick) {
 	svg.Path().
 		Attr("stroke-width", strokeWidth).
 		Attr("style", strokeStyle).
-		MoveTo(lx, canvasBox.Bottom).
+		MoveTo(int(lx), int(canvasBox.Bottom)).
 		LineToF(float64(lx), float64(canvasBox.Top)-ya.StrokeWidth/2).
 		Render(w)
 
@@ -63,17 +63,17 @@ func (ya *YAxis) Render(w io.Writer, canvasBox *Box, ra *Range, ticks []Tick) {
 		ly := canvasBox.Bottom - ra.Translate(t.Value)
 		tb := measureText(t.Label, AxisFontSize)
 
-		if tb.Width() > maxTextWidth {
-			maxTextWidth = tb.Width()
+		if tb.Width() > float64(maxTextWidth) {
+			maxTextWidth = int(tb.Width())
 		}
 
-		finalTextY = ly + tb.Height()>>1
+		finalTextY = int(ly) + int(tb.Height())>>1
 
 		svg.Path().
 			Attr("stroke-width", strokeWidth).
 			Attr("style", strokeStyle).
-			MoveTo(lx, ly).
-			LineTo(lx+HorizontalTickWidth, ly).
+			MoveTo(int(lx), int(ly)).
+			LineTo(int(lx+HorizontalTickWidth), int(ly)).
 			Render(w)
 
 		svg.Text().
@@ -85,14 +85,14 @@ func (ya *YAxis) Render(w io.Writer, canvasBox *Box, ra *Range, ticks []Tick) {
 	}
 
 	tb := measureText(ya.Name, AxisFontSize)
-	tx = canvasBox.Right + YAxisMargin + maxTextWidth + YAxisMargin
-	ty := canvasBox.Top + (canvasBox.Height()>>1 - tb.Height()>>1)
+	tx = canvasBox.Right + float64(YAxisMargin) + float64(maxTextWidth) + float64(YAxisMargin)
+	ty := int(canvasBox.Top) + (int(canvasBox.Height())>>1 - int(tb.Height())>>1)
 
 	svg.Text().
 		Content(ya.Name).
 		Attr("x", svg.Point(tx)).
 		Attr("y", svg.Point(ty)).
 		Attr("style", fillStyle).
-		Attr("transform", rotate(90, tx, ty)).
+		Attr("transform", rotate(90, int(tx), ty)).
 		Render(w)
 }

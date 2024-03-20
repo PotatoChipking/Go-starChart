@@ -50,12 +50,12 @@ func (ts *Series) Render(w io.Writer, canvasBox *Box, xrange, yrange *Range) {
 		Attr("stroke-width", normaliseStrokeWidth(ts.StrokeWidth)).
 		Attr("style", styles("stroke", ts.Color)).
 		Attr("class", "series").
-		MoveTo(x0, y0)
+		MoveTo(int(x0), int(y0))
 
 	for i := 1; i < ts.Len(); i++ {
 		vx, vy = ts.GetValues(i)
-		x = cl + xrange.Translate(vx)
-		y = cb - yrange.Translate(vy)
+		x = int(cl + xrange.Translate(vx))
+		y = int(cb - yrange.Translate(vy))
 		path.LineTo(x, y)
 	}
 

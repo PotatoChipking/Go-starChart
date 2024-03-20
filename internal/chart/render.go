@@ -21,8 +21,8 @@ func (c *Chart) Render(w io.Writer) {
 
 	plot := canvas.OuterConstrain(c.Box(), axesOuterBox)
 
-	xRange.Domain = plot.Width()
-	yRange.Domain = plot.Height()
+	xRange.Domain = int(plot.Width())
+	yRange.Domain = int(plot.Height())
 
 	background := svg.Rect().
 		Attr("x", svg.Point(0)).
@@ -64,11 +64,11 @@ func (c *Chart) getRanges(canvas *Box) (*Range, *Range) {
 	for index := 0; index < seriesLength; index++ {
 		vX, vY := c.Series.GetValues(index)
 
-		minX = min(minX, vX)
-		maxX = max(maxX, vX)
+		minX = math.Min(minX, vX)
+		maxX = math.Max(maxX, vX)
 
-		minY = min(minY, vY)
-		maxY = max(maxY, vY)
+		minY = math.Min(minY, vY)
+		maxY = math.Max(maxY, vY)
 	}
 
 	delta := maxY - minY
@@ -77,13 +77,13 @@ func (c *Chart) getRanges(canvas *Box) (*Range, *Range) {
 	yRange := &Range{
 		Min:    roundDown(minY, roundTo),
 		Max:    roundUp(maxY, roundTo),
-		Domain: canvas.Height(),
+		Domain: int(canvas.Height()),
 	}
 
 	xRange := &Range{
 		Min:    minX,
 		Max:    maxX,
-		Domain: canvas.Width(),
+		Domain: int(canvas.Width()),
 	}
 
 	return xRange, yRange
@@ -93,7 +93,7 @@ func (c *Chart) Box() *Box {
 	return &Box{
 		Top:    BoxPadding.Top,
 		Left:   BoxPadding.Left,
-		Right:  c.Width - BoxPadding.Right,
-		Bottom: c.Height - BoxPadding.Bottom,
+		Right:  float64(c.Width) - BoxPadding.Right,
+		Bottom: float64(c.Height) - BoxPadding.Bottom,
 	}
 }

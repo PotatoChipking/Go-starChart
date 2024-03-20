@@ -53,12 +53,12 @@ func degreesToRadians(degrees float64) float64 {
 	return degrees * (math.Pi / 180)
 }
 
-func rotateCoordinate(cx, cy, x, y int, thetaRadians float64) (rx, ry int) {
-	tempX, tempY := float64(x-cx), float64(y-cy)
+func rotateCoordinate(cx, cy int, x, y float64, thetaRadians float64) (rx, ry float64) {
+	tempX, tempY := x-float64(cx), y-float64(cy)
 	rotatedX := tempX*math.Cos(thetaRadians) - tempY*math.Sin(thetaRadians)
 	rotatedY := tempX*math.Sin(thetaRadians) + tempY*math.Cos(thetaRadians)
-	rx = int(rotatedX) + cx
-	ry = int(rotatedY) + cy
+	rx = rotatedX + float64(cx)
+	ry = rotatedY + float64(cy)
 	return
 }
 
